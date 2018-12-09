@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tv_test_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:gravity="start"
+        android:text="current temperature test"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/tv_test_UID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_test_temperature"
+        android:gravity="start"
+        android:text="UID test"
+        android:textSize="20sp" />
+
+
+    <Button
+        android:layout_above="@id/btn_read_memory"
+        android:layout_margin="8dp"
+        android:text="Read temperature"
+        android:id="@+id/btn_read_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:text="Read memory"
+        android:layout_margin="8dp"
+        android:layout_above="@id/btn_log_state"
+        android:id="@+id/btn_read_memory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:layout_above="@id/log_buttons"
+        android:text="Log state"
+        android:layout_margin="8dp"
+        android:id="@+id/btn_log_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:id="@+id/log_buttons"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/btn_active"
+            android:text="Active"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_passive"
+            android:text="Passive"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</RelativeLayout>
