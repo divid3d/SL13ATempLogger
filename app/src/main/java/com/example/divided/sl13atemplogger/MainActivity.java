@@ -27,8 +27,13 @@ public class MainActivity extends AppCompatActivity {
     PendingIntent mPendingIntent;
     Tag tag;
 
-    TextView mTestTemperature;
-    TextView mTestUID;
+    TextView mUID;
+    TextView mDSFID;
+    TextView mMemorySize;
+    TextView mCurrentTemp;
+    TextView mLogForm;
+    TextView mStorageRule;
+    TextView mCurrentStatus;
     Button mActive;
     Button mPassive;
     Button mLogState;
@@ -46,13 +51,19 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mTestTemperature = findViewById(R.id.tv_test_temperature);
-        mTestUID = findViewById(R.id.tv_test_UID);
+        mCurrentTemp = findViewById(R.id.toolbar_current_temperature);
+        mUID = findViewById(R.id.text_view_uuid_value);
+        mDSFID = findViewById(R.id.text_view_dsfid_value);
+        mMemorySize = findViewById(R.id.text_view_memory_size_value);
+
         mActive = findViewById(R.id.btn_active);
         mPassive = findViewById(R.id.btn_passive);
         mLogState = findViewById(R.id.btn_log_state);
         mReadMemory = findViewById(R.id.btn_read_memory);
         mReadTemperatures = findViewById(R.id.btn_read_temperature);
+        mLogForm = findViewById(R.id.text_view_log_form_value);
+        mStorageRule = findViewById(R.id.text_view_storage_rule_value);
+        mCurrentStatus = findViewById(R.id.text_view_current_status_value);
 
         mActive.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,27 +168,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
-            Toast.makeText(this, "device discovered", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Device discovered", Toast.LENGTH_SHORT).show();
 
             tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             try {
-                String tempVal = String.valueOf(SL13A.tempResponseToCelsius(SL13A.getTemperature(tag)));
-                mTestTemperature.setText(tempVal);
+                byte[] systemInformation = SL13A.getSystemInformation(tag);
+                mCurrentTemp.setText(String.format("Current temp: %.1f °C", SL13A.tempResponseToCelsius(SL13A.getTemperature(tag))));
+                mUID.setText(SL13A.getUIDFromSystemInfo(systemInformation));
+                mDSFID.setText(SL13A.getDSFIDFromSystemInfo(systemInformation));
+                mMemorySize.setText(SL13A.getTagMemorySizeFromSystemInfo(systemInformation) + " byte");
+                byte[] measurementSetup = SL13A.getMeasurementSetup(tag);
+                mLogForm.setText(SL13A.getLogForm(SL13A.getLogModeFromMeasurementSetup(measurementSetup)));
+                mStorageRule.setText(SL13A.getStorageRuleFromMeasurementSetup(measurementSetup));
+                byte[] logState = SL13A.getLogState(tag);
+                byte[] measurementStatus = SL13A.getMeasurementStatusFromLogState(logState);
+                mCurrentStatus.setText(SL13A.getCurrentState(measurementStatus), TextView.BufferType.SPANNABLE);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            try {
-                String UID = SL13A.getUIDFromSystemInfo(SL13A.getSystemInformation(tag));
-                mTestUID.setText(UID);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
-
-            SL13A.initialize(tag, new byte[]{(byte) 0, (byte) 0}, new byte[]{(byte) 0, (byte) 1}); // 1 jest LSB przy transmisji?
-            SL13A.setLogMode(tag, SL13A.composeLogModeParameter());
-
+            //SL13A.initialize(tag, new byte[]{(byte) 0, (byte) 0}, new byte[]{(byte) 0, (byte) 1}); // 1 jest LSB przy transmisji?
+            //SL13A.setLogMode(tag, SL13A.composeLogModeParameter());
 
             //byte[] test = SL13A.readSingleBlock(tag,(byte) 0x0C);
             //Log.e("test",Utils.byteArrayToHexString(new byte[]{test[0]}));

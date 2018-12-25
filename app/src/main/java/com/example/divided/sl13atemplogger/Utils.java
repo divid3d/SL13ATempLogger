@@ -25,17 +25,20 @@ public class Utils {
         return new String(hexChars);
     }
 
-    public static String ConvertHexByteArrayToString(byte[] byteArrayToConvert) {
+    public static String ConvertHexByteArrayToString(byte[] byteArrayToConvert,boolean withSplit) {
         String ConvertedByte = "";
+        String splitSign ="";
+        if(withSplit){
+            splitSign = " ";
+        }
+
         for (int i = byteArrayToConvert.length - 1; i >= 0; i--) {
             if (byteArrayToConvert[i] < 0) {
-                ConvertedByte += Integer.toString(byteArrayToConvert[i] + 256, 16)
-                        + " ";
+                ConvertedByte += Integer.toString(byteArrayToConvert[i] + 256, 16)+splitSign;
             } else if (byteArrayToConvert[i] <= 15) {
-                ConvertedByte += "0" + Integer.toString(byteArrayToConvert[i], 16)
-                        + " ";
+                ConvertedByte += "0" + Integer.toString(byteArrayToConvert[i], 16)+splitSign;
             } else {
-                ConvertedByte += Integer.toString(byteArrayToConvert[i], 16) + " ";
+                ConvertedByte += Integer.toString(byteArrayToConvert[i], 16)+splitSign;
             }
         }
 
@@ -150,5 +153,11 @@ public class Utils {
                     .append("\r\n");
         }
         return sb.toString();
+    }
+
+    public static boolean isBitSet(byte[] arr, int bit) {
+        int index = bit / 8;
+        int bitPosition = bit % 8;
+        return (arr[index] >> bitPosition & 1) == 1;
     }
 }

@@ -1,7 +1,10 @@
 package com.example.divided.sl13atemplogger;
 
+import android.graphics.Color;
 import android.nfc.Tag;
 import android.nfc.tech.NfcV;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 
 import java.io.IOException;
@@ -100,7 +103,7 @@ public class SL13A {
         if (response.length == 15) {
             byte[] UID = new byte[8];
             System.arraycopy(response, 2, UID, 0, 8);
-            return Utils.ConvertHexByteArrayToString(UID);
+            return Utils.ConvertHexByteArrayToString(UID, true);
         }
         throw new IOException("Wrong response format");
     }
@@ -109,16 +112,16 @@ public class SL13A {
         if (response.length == 15) {
             byte[] DSFID = new byte[1];
             System.arraycopy(response, 10, DSFID, 0, 1);
-            return Utils.ConvertHexByteArrayToString(DSFID);
+            return Utils.ConvertHexByteArrayToString(DSFID, false);
         }
         throw new IOException("Wrong response format");
     }
 
-    public static String getTagMemorySizeFromSystemInfo(byte[] response) throws IOException {
+    public static int getTagMemorySizeFromSystemInfo(byte[] response) throws IOException {
         if (response.length == 15) {
             byte[] tagMemorySize = new byte[2];
             System.arraycopy(response, 12, tagMemorySize, 0, 2);
-            return Utils.ConvertHexByteArrayToString(tagMemorySize);
+            return Utils.hexStringToInteger(Utils.ConvertHexByteArrayToString(tagMemorySize, false).toUpperCase()) + 1;
         }
         throw new IOException("Wrong response format");
     }
@@ -141,7 +144,7 @@ public class SL13A {
             response = nfcVTag.transceive(command);
             errorHandler(response);
 
-            Log.e("Read block " + String.valueOf(blockAddress), "Value:\t" + Utils.ConvertHexByteArrayToString(response) + "\tResponse length:\t" + response.length);
+            Log.e("Read block " + String.valueOf(blockAddress), "Value:\t" + Utils.ConvertHexByteArrayToString(response, false) + "\tResponse length:\t" + response.length);
 
             return response;
         } catch (IOException e) {
@@ -193,7 +196,7 @@ public class SL13A {
             response = nfcVTag.transceive(command);
             errorHandler(response);
 
-            Log.e("Read blocs " + String.valueOf(blockAddress) + "\tLength:\t" + String.valueOf(numberOfBlocks), "Value:\t" + Utils.ConvertHexByteArrayToString(response) + "\tResponse length:\t" + response.length);
+            Log.e("Read blocs " + String.valueOf(blockAddress) + "\tLength:\t" + String.valueOf(numberOfBlocks), "Value:\t" + Utils.ConvertHexByteArrayToString(response, false) + "\tResponse length:\t" + response.length);
 
             return response;
         } catch (IOException e) {
@@ -277,8 +280,8 @@ public class SL13A {
             System.arraycopy(response, 1, internalSensorCalibrationData, 0, 4);
             System.arraycopy(response, 5, externalSensorCalibrationData, 0, 4);
 
-            Log.e("Int calibration data", Utils.ConvertHexByteArrayToString(internalSensorCalibrationData));
-            Log.e("Ext calibration data", Utils.ConvertHexByteArrayToString(externalSensorCalibrationData));
+            Log.e("Int calibration data", Utils.ConvertHexByteArrayToString(internalSensorCalibrationData, false));
+            Log.e("Ext calibration data", Utils.ConvertHexByteArrayToString(externalSensorCalibrationData, false));
 
             return response;
         } catch (IOException e) {
@@ -382,20 +385,36 @@ public class SL13A {
             response = nfcVTag.transceive(command);
             errorHandler(response);
 
-            byte[] measurementsStatus = new byte[4];
-            System.arraycopy(response, 1, measurementsStatus, 0, 4);
-
-            byte[] limitsCounter = new byte[4];
-            System.arraycopy(response, 5, limitsCounter, 0, 4);
-
-            Log.e("Log state:", "Measurements status:\t" + Utils.ConvertHexByteArrayToString(measurementsStatus));
-            Log.e("Log state:", "Measurements status int:\t" + String.valueOf(Utils.byteArrayToInt(Utils.reverse(measurementsStatus))));
-            Log.e("Log state:", "Limits counter:\t" + Utils.ConvertHexByteArrayToString(limitsCounter));
-
             return response;
         } catch (IOException e) {
             e.printStackTrace();
             return response;
+        }
+    }
+
+    public static byte[] getMeasurementStatusFromLogState(byte[] logState){
+        byte[] measurementsStatus = new byte[4];
+        System.arraycopy(logState, 1, measurementsStatus, 0, 4);
+        return measurementsStatus;
+    }
+
+    public static byte[] getLogLimitsCounterFromLogState(byte[] logState){
+        byte[] limitsCounter = new byte[4];
+        System.arraycopy(logState, 5, limitsCounter, 0, 4);
+        return limitsCounter;
+    }
+
+    public static SpannableStringBuilder getCurrentState(byte[] measurementStatus){
+        if(!Utils.isBitSet(measurementStatus,0)){
+            String text = "Passive";
+            SpannableStringBuilder builder = new SpannableStringBuilder(text);
+            builder.setSpan(new ForegroundColorSpan(Color.RED),0,text.length(),0);
+            return builder;
+        }else{
+            String text = "Active/Logging";
+            SpannableStringBuilder builder = new SpannableStringBuilder(text);
+            builder.setSpan(new ForegroundColorSpan(Color.GREEN),0,text.length(),0);
+            return builder;
         }
     }
 
@@ -417,22 +436,6 @@ public class SL13A {
             response = nfcVTag.transceive(command);
             errorHandler(response);
 
-            byte[] startTime = new byte[4];
-            byte[] logLimits = new byte[4];
-            byte[] logMode = new byte[4];
-            byte[] delayTime = new byte[4];
-
-            System.arraycopy(response, 1, startTime, 0, 4);
-            System.arraycopy(response, 5, logLimits, 0, 4);
-            System.arraycopy(response, 9, logMode, 0, 4);
-            System.arraycopy(response, 13, delayTime, 0, 4);
-
-            Log.e("Measurement setup:", "Start time:\t" + Utils.ConvertHexByteArrayToString(startTime));
-            Log.e("Measurement setup:", "Log limits:\t" + Utils.ConvertHexByteArrayToString(logLimits));
-            Log.e("Measurement setup:", "Log mode:\t" + Utils.ConvertHexByteArrayToString(logMode));
-            Log.e("Measurement setup:", "Delay time:\t" + Utils.ConvertHexByteArrayToString(delayTime));
-
-
             return response;
         } catch (IOException e) {
             e.printStackTrace();
@@ -440,6 +443,55 @@ public class SL13A {
         }
     }
 
+    public static byte[] getStartTimeFromMeasurementSetup(byte[] measurementSetup){
+        byte[] startTime = new byte[4];
+        System.arraycopy(measurementSetup, 1, startTime, 0, 4);
+        return startTime;
+    }
+
+    public static byte[] getLogLimitsFromMeasurementSetup(byte[] measurementSetup){
+        byte[] logLimits = new byte[4];
+        System.arraycopy(measurementSetup, 5, logLimits, 0, 4);
+        return logLimits;
+    }
+
+    public static byte[] getDelayTimeFromMeasurementSetup(byte[] measurementSetup){
+        byte[] delayTime = new byte[4];
+        System.arraycopy(measurementSetup, 13, delayTime, 0, 4);
+        return delayTime;
+    }
+
+    public static byte[] getLogModeFromMeasurementSetup(byte[] measurementSetup){
+        byte[] logMode = new byte[4];
+        System.arraycopy(measurementSetup, 9, logMode, 0, 4);
+        return logMode;
+    }
+
+
+    public static String getLogForm(byte[] logMode){
+        if(Utils.isBitSet(logMode,29) && Utils.isBitSet(logMode,30)){
+            Log.e("Logging form","Limits crossing");
+            return "Limits crossing";
+        } else if (Utils.isBitSet(logMode, 29) && !Utils.isBitSet(logMode, 30)) {
+            Log.e("Logging form","All values out of limits");
+            return "All values out of limits";
+        }else if (!Utils.isBitSet(logMode,29) && !Utils.isBitSet(logMode,30)){
+            Log.e("Logging form","Dense");
+            return "Dense";
+        }else{
+            Log.e("Logging form","Not allowed");
+            return "Not allowed";
+        }
+    }
+
+    public static String getStorageRuleFromMeasurementSetup(byte[] measurementSetup){
+        if(Utils.isBitSet(measurementSetup,26)){
+            return "Rolling";
+        }else{
+            return "Normal";
+        }
+
+    }
     public static double[] getTemperatureCodesFromMemoryBlock(Tag tag, byte memoryBlock) throws IOException {
         byte[] response = readSingleBlock(tag, memoryBlock);
 

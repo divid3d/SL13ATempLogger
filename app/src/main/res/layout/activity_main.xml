@@ -5,69 +5,231 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/tv_test_temperature"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_height="?attr/actionBarSize"
         android:layout_alignParentTop="true"
-        android:gravity="start"
-        android:text="current temperature test"
-        android:textSize="20sp" />
+        android:background="@color/colorPrimaryDark"
+        android:elevation="4dp">
 
-    <TextView
-        android:id="@+id/tv_test_UID"
+        <TextView
+            android:id="@+id/toolbar_current_temperature"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:drawableLeft="@drawable/ic_thermometer"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center_vertical"
+            android:text="Current temp: -"
+            android:textColor="@android:color/white" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <LinearLayout
+        android:id="@+id/info_segment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_test_temperature"
-        android:gravity="start"
-        android:text="UID test"
-        android:textSize="20sp" />
+        android:layout_below="@id/toolbar"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:id="@+id/text_view_uuid_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="UUID"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_uuid_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_dsfid_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="DSFID"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_dsfid_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_memory_size_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="Memory size"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_memory_size_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_log_form_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="Logging form"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_log_form_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_storage_rule_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="Storage rule"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_storage_rule_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_current_status_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="center"
+            android:text="Current status"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/text_view_current_status_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="center"
+            android:text="-"
+            android:textSize="20sp" />
+
+    </LinearLayout>
 
 
     <Button
-        android:layout_above="@id/btn_read_memory"
-        android:layout_margin="8dp"
-        android:text="Read temperature"
         android:id="@+id/btn_read_temperature"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:text="Read memory"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_read_memory"
         android:layout_margin="8dp"
-        android:layout_above="@id/btn_log_state"
+        android:text="Read temperature" />
+
+    <Button
         android:id="@+id/btn_read_memory"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <Button
-        android:layout_above="@id/log_buttons"
-        android:text="Log state"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/btn_log_state"
         android:layout_margin="8dp"
+        android:text="Read memory" />
+
+    <Button
         android:id="@+id/btn_log_state"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_above="@id/log_buttons"
+        android:layout_margin="8dp"
+        android:text="Log state" />
 
     <android.support.v7.widget.LinearLayoutCompat
         android:id="@+id/log_buttons"
-        android:layout_alignParentBottom="true"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_active"
-            android:text="Active"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="Active" />
+
         <Button
             android:id="@+id/btn_passive"
-            android:text="Passive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="Passive" />
     </android.support.v7.widget.LinearLayoutCompat>
 
 </RelativeLayout>
