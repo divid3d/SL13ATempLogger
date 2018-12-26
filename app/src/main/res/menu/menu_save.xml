@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:checkableBehavior="none">
+    <group android:checkableBehavior="none">
         <item
             android:id="@+id/save_txt"
             android:checkable="false"
@@ -12,9 +11,5 @@
             android:checkable="false"
             android:title="as .CSV" />
 
-        <item
-            android:id="@+id/save_json"
-            android:checkable="false"
-            android:title="as .json" />
     </group>
 </menu>

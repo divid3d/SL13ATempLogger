@@ -16,6 +16,5 @@
         android:layout_alignParentStart="true"
         android:layout_below="@+id/temperature_layout"
         android:layout_margin="8dp"
-        android:background="@drawable/chart_background"
        />
 </RelativeLayout>

@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mLogForm;
     TextView mStorageRule;
     TextView mCurrentStatus;
+    TextView mMeasurementsCount;
     Button mActive;
     Button mPassive;
     Button mLogState;
@@ -64,11 +65,14 @@ public class MainActivity extends AppCompatActivity {
         mLogForm = findViewById(R.id.text_view_log_form_value);
         mStorageRule = findViewById(R.id.text_view_storage_rule_value);
         mCurrentStatus = findViewById(R.id.text_view_current_status_value);
+        mMeasurementsCount = findViewById(R.id.text_view_measurements_count_value);
 
         mActive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (tag != null) {
+                    SL13A.setLogMode(tag, SL13A.composeLogModeParameter());
+                    SL13A.initialize(tag,Utils.binaryStringToByte("00000000"),Utils.binaryStringToByte("00000000"));
                     SL13A.startLog(tag, new byte[]{(byte) 0, (byte) 0, (byte) 0, (byte) 0});
                 }
             }
@@ -87,7 +91,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (tag != null) {
-                    SL13A.getLogState(tag);
+                    byte[] logState = SL13A.getLogState(tag);
+                    byte[] measurementStatus =  SL13A.getMeasurementStatusFromLogState(logState);
+                    byte measurementAddressPointer = SL13A.getMeasurementAddressPointer(measurementStatus);
+                    Log.e("Address pointer",Utils.ConvertHexByteArrayToString(new byte[]{measurementAddressPointer},false));
+                    int numberOfMeasurement = SL13A.getNumberOfMeasurements(measurementStatus);
+                    Log.e("Number of M",String.valueOf(numberOfMeasurement));
+                    mMeasurementsCount.setText(String.valueOf(numberOfMeasurement));
                 }
             }
         });
@@ -110,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
                             mIsTempReadPerforming = true;
                             buffer.clear();
                             int counter = 0;
-                            for (int i = 0x01; i <= 3; i++) {
+                            for (int i = 0x01; i <= 10; i++) {
                                 try {
                                     int readingNumber = 0;
                                     double[] tempReadings = SL13A.getTemperatureCodesFromMemoryBlock(tag, (byte) i);
@@ -183,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
                 byte[] logState = SL13A.getLogState(tag);
                 byte[] measurementStatus = SL13A.getMeasurementStatusFromLogState(logState);
                 mCurrentStatus.setText(SL13A.getCurrentState(measurementStatus), TextView.BufferType.SPANNABLE);
+                byte measurementAddressPointer = SL13A.getMeasurementAddressPointer(measurementStatus);
+                int numberOfMeasurement = SL13A.getNumberOfMeasurements(measurementStatus);
+                mMeasurementsCount.setText(String.valueOf(numberOfMeasurement));
             } catch (IOException e) {
                 e.printStackTrace();
             }

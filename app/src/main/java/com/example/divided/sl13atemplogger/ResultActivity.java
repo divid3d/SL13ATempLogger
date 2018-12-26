@@ -143,13 +143,6 @@ public class ResultActivity extends AppCompatActivity {
                                 }
                                 break;
 
-                            case R.id.save_json:
-
-                                break;
-
-                            default:
-
-                                break;
                         }
                     }
                 });

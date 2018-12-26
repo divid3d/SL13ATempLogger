@@ -25,8 +25,11 @@
 
     </android.support.v7.widget.Toolbar>
 
-    <LinearLayout
+    <ScrollView
         android:id="@+id/info_segment"
+        android:layout_width="match_parent"
+        android:layout_height="300dp">
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/toolbar"
@@ -34,157 +37,183 @@
 
         <TextView
             android:layout_margin="4dp"
-            android:layout_gravity="center"
             android:id="@+id/text_view_uuid_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="UUID"
             android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_uuid_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
         <TextView
             android:layout_margin="4dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:id="@+id/text_view_dsfid_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="DSFID"
             android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_dsfid_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
         <TextView
             android:layout_margin="4dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:id="@+id/text_view_memory_size_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="Memory size"
             android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_memory_size_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
         <TextView
             android:layout_margin="4dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:id="@+id/text_view_log_form_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="Logging form"
             android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_log_form_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
         <TextView
             android:layout_margin="4dp"
-            android:layout_gravity="center"
             android:layout_weight="1"
             android:id="@+id/text_view_storage_rule_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
+            android:gravity="start"
             android:text="Storage rule"
             android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_storage_rule_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
         <TextView
-            android:layout_margin="4dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:id="@+id/text_view_current_status_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:fontFamily="@font/product_sans_bold"
-            android:gravity="center"
-            android:text="Current status"
-            android:textSize="15sp" />
+        android:layout_margin="4dp"
+        android:layout_weight="1"
+        android:id="@+id/text_view_current_status_label"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_columnWeight="1"
+        android:fontFamily="@font/product_sans_bold"
+        android:gravity="start"
+        android:text="Current status"
+        android:textSize="15sp" />
 
         <TextView
-            android:layout_gravity="center"
+            android:layout_margin="4dp"
+
             android:layout_weight="1"
             android:id="@+id/text_view_current_status_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_columnWeight="1"
             android:fontFamily="@font/product_sans_regular"
-            android:gravity="center"
+            android:gravity="start"
+            android:text="-"
+            android:textSize="20sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:id="@+id/text_view_measurements_count_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_bold"
+            android:gravity="start"
+            android:text="Measurements count"
+            android:textSize="15sp" />
+
+        <TextView
+            android:layout_margin="4dp"
+
+            android:layout_weight="1"
+            android:id="@+id/text_view_measurements_count_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="1"
+            android:fontFamily="@font/product_sans_regular"
+            android:gravity="start"
             android:text="-"
             android:textSize="20sp" />
 
     </LinearLayout>
-
+    </ScrollView>
 
     <Button
+        android:layout_below="@id/info_segment"
         android:id="@+id/btn_read_temperature"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

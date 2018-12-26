@@ -230,7 +230,8 @@ public class SL13A {
         }
     }
 
-    public static byte[] initialize(Tag tag, byte[] delayTime, byte[] nbOfUserBlocks) {
+
+    public static byte[] initialize(Tag tag, byte delayTime, byte nbOfUserBlocks) {
         NfcV nfcVTag = NfcV.get(tag);
         byte[] response = new byte[]{(byte) 0xFF};
         try {
@@ -238,11 +239,11 @@ public class SL13A {
             nfcVTag.connect();
 
             byte[] command = new byte[]{
-                    (byte) 0x02,  // FLAGS
-                    (byte) 0xAC,  // Read single block command
+                    (byte) 0x20,  // FLAGS
+                    (byte) 0xAC,  // Initialize command
                     0, 0, 0, 0, 0, 0, 0, 0,
-                    delayTime[1], delayTime[0],
-                    nbOfUserBlocks[1], nbOfUserBlocks[0]};
+                    nbOfUserBlocks, delayTime,
+                    Utils.binaryStringToByte("00000000"), Utils.binaryStringToByte("00000000")};
 
             System.arraycopy(tag.getId(), 0, command, 2, 8);
 
@@ -326,7 +327,7 @@ public class SL13A {
 
             byte[] command = new byte[]{
                     (byte) 0x20, // Flags
-                    (byte) 0xA6, // Command: Get Temperature
+                    (byte) 0xA6, // Command: Set Passive
                     (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,  // placeholder for tag UID
             };
             System.arraycopy(tag.getId(), 0, command, 2, 8);
@@ -392,28 +393,36 @@ public class SL13A {
         }
     }
 
-    public static byte[] getMeasurementStatusFromLogState(byte[] logState){
+    public static byte[] getMeasurementStatusFromLogState(byte[] logState) {
         byte[] measurementsStatus = new byte[4];
         System.arraycopy(logState, 1, measurementsStatus, 0, 4);
         return measurementsStatus;
     }
 
-    public static byte[] getLogLimitsCounterFromLogState(byte[] logState){
+    public static int getNumberOfMeasurements(byte[] measurementsStatus) {
+        return (java.nio.ByteBuffer.wrap(measurementsStatus).order(java.nio.ByteOrder.LITTLE_ENDIAN).getInt() & 0x00FFC000) >> 14;
+    }
+
+    public static byte getMeasurementAddressPointer(byte[] measurementStatus) {
+        return measurementStatus[3];
+    }
+
+    public static byte[] getLogLimitsCounterFromLogState(byte[] logState) {
         byte[] limitsCounter = new byte[4];
         System.arraycopy(logState, 5, limitsCounter, 0, 4);
         return limitsCounter;
     }
 
-    public static SpannableStringBuilder getCurrentState(byte[] measurementStatus){
-        if(!Utils.isBitSet(measurementStatus,0)){
+    public static SpannableStringBuilder getCurrentState(byte[] measurementStatus) {
+        if (!Utils.isBitSet(measurementStatus, 0)) {
             String text = "Passive";
             SpannableStringBuilder builder = new SpannableStringBuilder(text);
-            builder.setSpan(new ForegroundColorSpan(Color.RED),0,text.length(),0);
+            builder.setSpan(new ForegroundColorSpan(Color.RED), 0, text.length(), 0);
             return builder;
-        }else{
+        } else {
             String text = "Active/Logging";
             SpannableStringBuilder builder = new SpannableStringBuilder(text);
-            builder.setSpan(new ForegroundColorSpan(Color.GREEN),0,text.length(),0);
+            builder.setSpan(new ForegroundColorSpan(Color.GREEN), 0, text.length(), 0);
             return builder;
         }
     }
@@ -443,55 +452,56 @@ public class SL13A {
         }
     }
 
-    public static byte[] getStartTimeFromMeasurementSetup(byte[] measurementSetup){
+    public static byte[] getStartTimeFromMeasurementSetup(byte[] measurementSetup) {
         byte[] startTime = new byte[4];
         System.arraycopy(measurementSetup, 1, startTime, 0, 4);
         return startTime;
     }
 
-    public static byte[] getLogLimitsFromMeasurementSetup(byte[] measurementSetup){
+    public static byte[] getLogLimitsFromMeasurementSetup(byte[] measurementSetup) {
         byte[] logLimits = new byte[4];
         System.arraycopy(measurementSetup, 5, logLimits, 0, 4);
         return logLimits;
     }
 
-    public static byte[] getDelayTimeFromMeasurementSetup(byte[] measurementSetup){
+    public static byte[] getDelayTimeFromMeasurementSetup(byte[] measurementSetup) {
         byte[] delayTime = new byte[4];
         System.arraycopy(measurementSetup, 13, delayTime, 0, 4);
         return delayTime;
     }
 
-    public static byte[] getLogModeFromMeasurementSetup(byte[] measurementSetup){
+    public static byte[] getLogModeFromMeasurementSetup(byte[] measurementSetup) {
         byte[] logMode = new byte[4];
         System.arraycopy(measurementSetup, 9, logMode, 0, 4);
         return logMode;
     }
 
 
-    public static String getLogForm(byte[] logMode){
-        if(Utils.isBitSet(logMode,29) && Utils.isBitSet(logMode,30)){
-            Log.e("Logging form","Limits crossing");
+    public static String getLogForm(byte[] logMode) {
+        if (Utils.isBitSet(logMode, 29) && Utils.isBitSet(logMode, 30)) {
+            Log.e("Logging form", "Limits crossing");
             return "Limits crossing";
         } else if (Utils.isBitSet(logMode, 29) && !Utils.isBitSet(logMode, 30)) {
-            Log.e("Logging form","All values out of limits");
+            Log.e("Logging form", "All values out of limits");
             return "All values out of limits";
-        }else if (!Utils.isBitSet(logMode,29) && !Utils.isBitSet(logMode,30)){
-            Log.e("Logging form","Dense");
+        } else if (!Utils.isBitSet(logMode, 29) && !Utils.isBitSet(logMode, 30)) {
+            Log.e("Logging form", "Dense");
             return "Dense";
-        }else{
-            Log.e("Logging form","Not allowed");
+        } else {
+            Log.e("Logging form", "Not allowed");
             return "Not allowed";
         }
     }
 
-    public static String getStorageRuleFromMeasurementSetup(byte[] measurementSetup){
-        if(Utils.isBitSet(measurementSetup,26)){
+    public static String getStorageRuleFromMeasurementSetup(byte[] measurementSetup) {
+        if (Utils.isBitSet(measurementSetup, 26)) {
             return "Rolling";
-        }else{
+        } else {
             return "Normal";
         }
 
     }
+
     public static double[] getTemperatureCodesFromMemoryBlock(Tag tag, byte memoryBlock) throws IOException {
         byte[] response = readSingleBlock(tag, memoryBlock);
 
@@ -523,7 +533,7 @@ public class SL13A {
 
             byte[] command = new byte[]{
                     (byte) 0x20, // Flags
-                    (byte) 0xA7, // Command: Start Log
+                    (byte) 0xA1, // Command: Set Log
                     (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,  // placeholder for tag UID
                     logMode[0], logMode[1], logMode[2], logMode[3]
             };
@@ -540,11 +550,12 @@ public class SL13A {
     }
 
     public static byte[] composeLogModeParameter() {
-        byte[] logModeParameter = new byte[]{(byte) 0, (byte) 0, (byte) 0, (byte) 0};
-        byte byte4 = Utils.binaryStringToByte("00000001");
-        byte byte3 = Utils.binaryStringToByte("00000000");
-        byte byte2 = Utils.binaryStringToByte("00000000");
-        byte byte1 = Utils.binaryStringToByte("00000000");
+        byte[] logModeParameter = new byte[4];
+
+        byte byte1 = Utils.binaryStringToByte("00000000"); //bit  7 - 0
+        byte byte2 = Utils.binaryStringToByte("00000100"); //bit 15 - 8 , bit 10 = 1 , 1s interval
+        byte byte3 = Utils.binaryStringToByte("00000000"); //bit 23 - 16
+        byte byte4 = Utils.binaryStringToByte("00000000"); //bit 31 - 24
 
         logModeParameter[0] = byte1;
         logModeParameter[1] = byte2;
